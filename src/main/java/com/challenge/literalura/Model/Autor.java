@@ -2,6 +2,7 @@ package com.challenge.literalura.Model;
 
 import jakarta.persistence.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "autores")
@@ -61,5 +62,14 @@ public class Autor {
 
     public void setLibros(List<Libro> libros) {
         this.libros = libros;
+    }
+
+    @Override
+    public String toString() {
+        return "Nombre del autor: " + nombre + '\'' +
+                ", fechaDeNacimiento: " + fechaDeNacimiento +
+                ", fechaDeFallecimiento: " + fechaDeFallecimiento +
+                ", libros=" + libros.stream().map(Libro::getTitulo)
+                .collect(Collectors.toList());
     }
 }

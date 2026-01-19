@@ -1,14 +1,13 @@
 package com.challenge.literalura.Principal;
 
-import com.challenge.literalura.Model.Autor;
-import com.challenge.literalura.Model.DatosLibro;
-import com.challenge.literalura.Model.Libro;
-import com.challenge.literalura.Model.ResultadoApi;
+import com.challenge.literalura.Model.*;
 import com.challenge.literalura.Repository.AutorRepository;
 import com.challenge.literalura.Repository.LibroRepository;
 import com.challenge.literalura.Service.ConsumoAPI;
 import com.challenge.literalura.Service.ConvierteDatos;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -45,6 +44,10 @@ public class Principal {
 
             switch (opcion) {
                 case 1 -> buscarLibroPorTitulo();
+                case 2 -> listarLibrosRegistrados();
+                case 3 -> listarAutores();
+                case 4 -> autoresVivosPorFecha();
+                case 5 -> filtrarLibrosPorIdioma();
                 case 0 -> System.out.println("Cerrando la aplicación...");
                 default -> System.out.println("Opción inválida");
             }
@@ -63,6 +66,67 @@ public class Principal {
                     "\n Idiomas: " + l.idiomas() +
                     "\n Total de descargas: " + l.totalDescargas());
             }, () -> IO.println("No hubo resultados para la busqueda realizada."));
+    }
+
+    private void listarLibrosRegistrados() {
+        List<Libro> libros = libroRepository.findAll();
+        if (libros.isEmpty()) {
+            IO.println("No hay libros registrados en la base de datos.");
+        } else {
+            libros.stream()
+                    .sorted(Comparator.comparing(Libro::getTitulo))
+                    .forEach(System.out::println);
+        }
+    }
+
+    private void listarAutores() {
+        List<Autor> autores = autorRepository.findAll();
+        if (autores.isEmpty()){
+            IO.println("Aun no hay autores registrados");
+        } else {
+            autores.stream()
+                    .sorted(Comparator.comparing(Autor::getNombre))
+                    .forEach(System.out::println);
+        }
+    }
+
+    private void autoresVivosPorFecha() {
+        IO.println("Ingrese el año para filtrar autores vivos en ese año: ");
+        try {
+            var fecha = Integer.parseInt(lectura.nextLine());
+            List<Autor> autoresVivos = autorRepository.
+                    findByFechaDeNacimientoLessThanEqualAndFechaDeFallecimientoGreaterThanEqual(fecha, fecha);
+            if(autoresVivos.isEmpty()) {
+                IO.println("No hay autores vivos registrados en el año " + fecha);
+            }else {
+                autoresVivos.forEach(System.out::println);
+            }
+        } catch (NumberFormatException e) {
+            IO.println("Por favor, ingrese un numero de año valido.");
+        }
+    }
+
+    public void filtrarLibrosPorIdioma() {
+        IO.println("""
+                Elija la opción para buscar libros:
+                1. español.
+                2. Ingles.
+                3. Frances.
+                4. Portugues.
+                """);
+        var opcion = lectura.nextLine();
+        try {
+            Idioma idiomaSeleccionado = Idioma.fromString(opcion);
+            List<Libro> libros = libroRepository.findByIdioma(idiomaSeleccionado);
+
+            if (libros.isEmpty()) {
+                IO.println("No se encontraron libros en ese idioma.");
+            } else {
+                libros.forEach(System.out::println);
+            }
+        } catch (IllegalArgumentException e) {
+            IO.println("Opción no válida.");
+        }
     }
 
     private Optional<DatosLibro> mapearDatos(){
