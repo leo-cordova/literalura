@@ -13,7 +13,7 @@ public class Libro {
     private String titulo;
 
     @Enumerated(EnumType.STRING)
-    private Idioma idiomas;
+    private Idioma idioma;
     private Integer totalDescargas;
 
     @ManyToOne
@@ -22,7 +22,7 @@ public class Libro {
     public Libro (){}
     public Libro (DatosLibro datosLibro) {
         this.titulo = datosLibro.titulo();
-        this.idiomas = Idioma.fromString(datosLibro.idiomas().get(0));
+        this.idioma = Idioma.fromString(datosLibro.idiomas().get(0));
         this.totalDescargas = datosLibro.totalDescargas();
     }
 
@@ -51,12 +51,12 @@ public class Libro {
     }
 
 
-    public Idioma getIdiomas() {
-        return idiomas;
+    public Idioma getIdioma() {
+        return idioma;
     }
 
-    public void setIdiomas(String idiomas) {
-        this.idiomas = Idioma.fromString(idiomas);
+    public void setIdioma(String idiomas) {
+        this.idioma = Idioma.fromString(idiomas);
     }
 
     public Integer getTotalDescargas() {
@@ -69,9 +69,9 @@ public class Libro {
 
     @Override
     public String toString() {
-        return "Titulo: " + titulo + '\'' +
-                ", idiomas: " + idiomas + '\'' +
-                ", autor: " + autor.getNombre() +
-                ", totalDescargas: " + totalDescargas;
+        return "Titulo: " + titulo +
+                "\n idiomas: " + idioma +
+                "\n autor: " + autor.getNombre() +
+                "\n totalDescargas: " + totalDescargas;
     }
 }

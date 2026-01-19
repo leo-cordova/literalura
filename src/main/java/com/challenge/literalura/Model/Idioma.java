@@ -16,10 +16,19 @@ public enum Idioma {
 
     public static Idioma fromString(String text) {
         for (Idioma idioma : Idioma.values()) {
-            if (idioma.opcionMenu.equalsIgnoreCase(text)) {
+            if (idioma.categoriaIdioma.equalsIgnoreCase(text)) {
                 return idioma;
             }
         }
         throw new IllegalArgumentException("Idioma no encontrado para: " + text);
+    }
+
+    public static Idioma fromMenu(String text) {
+        for (Idioma idioma : Idioma.values()) {
+            if (idioma.opcionMenu.equalsIgnoreCase(text)) {
+                return idioma;
+            }
+        }
+        throw new IllegalArgumentException("Idioma no encontrado para la opcion del menu: " + text);
     }
 }
